@@ -6,6 +6,7 @@ class Linked_list():
         assert type(array) is list, "Initialize linked list with a list object."
         if len(array)==0:
             self.head=None
+            self.tail=None
         else:
             current=Node(array[0])
             self.head=current
@@ -15,13 +16,14 @@ class Linked_list():
                 current.next=next
                 current=next
                 i+=1
+            self.tail=current
 
-"""
-ll2=linked_list([])
+
+ll2=Linked_list([])
 print(ll2.head)
-ll=linked_list([1,2,3,4])
+ll=Linked_list([1,2,3,4])
 print(ll.head.key)
 print(ll.head.next.key)
 print(ll.head.next.next.key)
 print(ll.head.next.next.next.key)
-"""
+print(ll.tail.key)
