@@ -28,7 +28,7 @@ class Union_Find():
             self.dic[root]=[root,1]
         return root
 
-    def union(self,r,s): # Union of the two sets which which r and s lie in.
+    def union(self,r,s): # Union of the two sets which r and s lie in.
         assert r in list(self.dic.keys()), f"The element \'{str(r)}\' does not exist yet."
         assert s in list(self.dic.keys()), f"The element \'{str(s)}\' does not exist yet."
         root_r,height_r=self.dic[self.find(r)]
