@@ -21,18 +21,21 @@ class ab_TreeNode():
 
 class ab_Tree():
 
-    def __init__(self,a:int,b:int,childkey1:float,childkey2:float):
-        assert isinstance(a,int) & isinstance(b,int),"a,b must be integers."
-        assert a>=2 and b>=2*a-1, "(a,b) does not fulfill the necessary requirements."
-        assert isinstance(childkey1,float) & isinstance(childkey2,float) & childkey1!=childkey2,"Make sure the keys of the two initialized child nodes are distinct numbers."
-        self.a=a
-        self.b=b
+    def create_minimal_ab_tree(self,childkey1,childkey2):
         self.root=ab_TreeNode(leaf=False,keys=[min(childkey1,childkey2)])
         child1=ab_TreeNode(leaf=True,keys=childkey1)
         child2=ab_TreeNode(leaf=True,keys=childkey2)
         self.root.children=[child1,child2]
         child1.parent=self.root
         child2.parent=self.root
+
+    def __init__(self,a:int,b:int,childkey1:float,childkey2:float):
+        assert isinstance(a,int) & isinstance(b,int),"a,b must be integers."
+        assert a>=2 and b>=2*a-1, "(a,b) does not fulfill the necessary requirements."
+        assert isinstance(childkey1,float) & isinstance(childkey2,float) & childkey1!=childkey2,"Make sure the keys of the two initialized child nodes are distinct numbers."
+        self.a=a
+        self.b=b
+        self.create_minimal_ab_tree(childkey1,childkey2)
 
     def isleaf(self,v):
         if v.children==[]:
@@ -58,6 +61,33 @@ class ab_Tree():
             return v
         return None
 
+    def rebalance(self,v):
+        cut=math.ceil((self.b+1)/2)
+        while len(v.children)>self.b:
+            if v!=self.root:
+                u=v.parent
+            else:
+                u=self.root
+            # we now divide v into two children from u: v1 and v2. 
+            v1=ab_TreeNode(leaf=False,keys=v.keys[1:cut])
+            v1.children=v.children[:cut]
+            v2=ab_TreeNode(leaf=False,keys=v.keys[cut+1:-1])
+            v2.children=v.children[cut:]
+            if u==v.parent:
+                u.children=u.children[:u.children.index(v)]+[v1,v2]+u.children[u.children.index(v)+1:]
+                u.keys.append(v.keys[cut])
+                u.keys.sort()
+            else:
+                u.children=[v1,v2]
+                u.keys=[-float("inf"),v.keys[cut],float("inf")]
+            for vi in u.children:
+                vi.parent=u
+            for child in v1.children:
+                child.parent=v1
+            for child in v2.children:
+                child.parent=v2
+            v=u
+
     def insert(self,key):
         w,insert_left=self.find(key,approx=True)
         v=w.parent        
@@ -69,36 +99,14 @@ class ab_Tree():
             v.children=v.children[:v.children.index(w)+1]+[ab_TreeNode(leaf=True,keys=key)]+v.children[v.children.index(w)+1:]
             v.keys.append(w.keys)  
             v.keys.sort()
-        # check if the condition of a a-b Tree is fulfilled. If the number of children is > b, then rebalance. 
+        # check if the condition of a a-b Tree is fulfilled. If the number of children is > b, then rebalance the tree at v. 
         if len(v.children)>self.b:
-            while len(v.children)>self.b:
-                if v!=self.root:
-                    u=v.parent
-                else:
-                    u=self.root
-                # we now divide v into two children from u: v1 and v2. 
-                cut=math.ceil((self.b+1)/2)
-                v1=ab_TreeNode(leaf=False,keys=v.keys[1:cut])
-                v1.children=v.children[:cut]
-                v2=ab_TreeNode(leaf=False,keys=v.keys[cut+1:-1])
-                v2.children=v.children[cut:]
-                if u==v.parent:
-                    u.children=u.children[:u.children.index(v)]+[v1,v2]+u.children[u.children.index(v)+1:]
-                    u.keys.append(v.keys[cut])
-                    u.keys.sort()
-                else:
-                    u.children=[v1,v2]
-                    u.keys=[-float("inf"),v.keys[cut],float("inf")]
-                for vi in u.children:
-                    vi.parent=u
-                for child in v1.children:
-                    child.parent=v1
-                for child in v2.children:
-                    child.parent=v2
-                v=u
-        return None
+            self.rebalance(v)
+
+
 
 """
+# Testing
 t=ab_Tree(2,3,0,1)
 #for i in range(2,15):
 for i in range(14,1,-1):
