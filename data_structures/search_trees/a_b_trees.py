@@ -1,6 +1,10 @@
 
 import math
 
+# Status 20240824: Find and Insert work. Deletion incomplete.
+
+# TODO: Deletion
+
 class ab_TreeNode():
     def __init__(self,leaf,keys):
         assert isinstance(leaf,bool), "Parameter leaf should be boolean."
@@ -46,9 +50,8 @@ class ab_Tree():
     def find(self,key:int,approx=False):
         v=self.root
         while v!=None and not self.isleaf(v): # go to the leaf node whose keys-element is the smallest element greater than key.
-            i=min([j for j in list(range(len(v.keys)-1)) if (key>v.keys[j] and key<=v.keys[j+1])])
             parent=v
-            v=v.children[i]
+            v=v.children[[j for j in range(len(v.keys)-1) if (key>v.keys[j] and key<=v.keys[j+1])][0]]
             v.parent=parent
         if approx:
             assert v.keys!=key, "This key already exists."
@@ -61,7 +64,7 @@ class ab_Tree():
             return v
         return None
 
-    def rebalance(self,v):
+    def insertion_rebalance(self,v):
         cut=math.ceil((self.b+1)/2)
         while len(v.children)>self.b:
             if v!=self.root:
@@ -101,11 +104,48 @@ class ab_Tree():
             v.keys.sort()
         # check if the condition of a a-b Tree is fulfilled. If the number of children is > b, then rebalance the tree at v. 
         if len(v.children)>self.b:
-            self.rebalance(v)
+            self.insertion_rebalance(v)
+
+    """
+    def adopt(self,v,neighbor):
+        pass
+
+    def merge(self):
+        pass
+
+    def deletion_rebalance(self,v):
+        index_v=v.parent.children.index(v)
+        if index_v-1>0:
+            v_left_neighbor=v.parent.children[index_v-1]
+        else:
+            v_left_neighbor=None
+        if index_v+1<len(v.parent.children)-1:
+            v_right_neighbor=v.parent.children[index_v+1]
+        else:
+            v_right_neighbor=None
+        if len(v_left_neighbor.children)>self.a or len(v_right_neighbor.children)>self.a:
+            self.adopt()
+        else:
+            self.merge()
+
+    def delete(self,key):
+        w=self.find(key)
+        assert w!=None, "The key can not be deleted because it is not contained in the (a,b)-tree."
+        v=w.parent
+        v.children.remove(w)
+        keyindex_to_remove=min(len(v.keys)-2,[j for j in range(1,len(v.keys)) if (key>v.keys[j-1] and key<=v.keys[j])][0])
+        v.keys=[key for key in v.keys if key!=v.keys[keyindex_to_remove]]
+        if len(v.children)<self.a:
+            self.deletion_rebalance(v)
+            """
+
+        
 
 
 
-"""
+
+
+
 # Testing
 t=ab_Tree(2,3,0,1)
 #for i in range(2,15):
@@ -131,4 +171,6 @@ for i in range(14,1,-1):
                     print(grandgrandchild.keys)
                 print()          
     print()
-    """
+
+
+print("TODO: Implementation of Delete Node.")
