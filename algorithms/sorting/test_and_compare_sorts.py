@@ -7,6 +7,7 @@ random.seed(10)
 l=list(range(100000))
 l_permutation=l.copy()
 random.shuffle(l_permutation)
+#print(l_permutation)
 results=[merge_sort(l_permutation),
          quick_sort(l_permutation)]
          
