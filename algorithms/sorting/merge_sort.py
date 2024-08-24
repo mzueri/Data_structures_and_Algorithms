@@ -13,7 +13,6 @@ def is_sorted(input_list:list)->bool:
 
 def merge(list1:list,list2:list)->list:
     assert isinstance(list1,list) & isinstance(list2,list),TypeError
-    assert is_sorted(list1) & is_sorted(list2), "Error: The lists must be sorted before merging."
     sorted_list=[]
     i=0;j=0
     while (i<len(list1)) or (j<len(list2)):
