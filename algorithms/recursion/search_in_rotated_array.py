@@ -12,7 +12,7 @@ You must write an algorithm with O(log n) runtime complexity.
 def search_rotated_array(nums: list[int], target: int) -> int:
 
     def search_helper(nums,target):
-        print("new function call")
+        
         len_nums=len(nums)
 
         if len_nums==0:
