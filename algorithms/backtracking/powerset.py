@@ -2,6 +2,8 @@
 # If this list was turned into a set, return the powerset of this set as a list. 
 # The order of the elements does not matter. 
 
+import copy 
+
 # the following function is only for testing.
 def get_unique_sublists(list: list) -> list:
     unique_sublists=[]
@@ -18,8 +20,12 @@ def powerset(list: list) -> list:
     res,curr = [],[] 
 
     def backtrack(index):
+
+        nonlocal res # we want to modify the enclosing variable res.
+        nonlocal curr # we want to modify the enclosing variable curr.
+
         if index==len(list):
-            res.append(curr[:]) # use a shallow copy of curr!
+            res.append(copy.deepcopy(curr)) # use a deep copy of curr since we do not want it to be changed inside of res.
             return
 
         backtrack(index+1) # do not consider list[index]
